@@ -18,10 +18,10 @@ namespace Yahtzee
         public void Yahtzee_scores_50()
         {
             int expected = 50;
-            int actual = Yahtzee.yahtzee(4, 4, 4, 4, 4);
+            int actual = Yahtzee.Multiples(5, 4, 4, 4, 4, 4);
             Assert.AreEqual(expected, actual);
-            Assert.AreEqual(50, Yahtzee.yahtzee(6, 6, 6, 6, 6));
-            Assert.AreEqual(0, Yahtzee.yahtzee(6, 6, 6, 6, 3));
+            Assert.AreEqual(50, Yahtzee.Multiples(5, 6, 6, 6, 6, 6));
+            Assert.AreEqual(0, Yahtzee.Multiples(5, 6, 6, 6, 6, 3));
         }
 
         [Test]

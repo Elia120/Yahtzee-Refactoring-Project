@@ -27,18 +27,6 @@ namespace Yahtzee
             return total;
         }
 
-        //yahtzee is 5 of a kind
-        public static int yahtzee(params int[] dice)
-        {
-            int[] counts = new int[6];
-            foreach (int die in dice)
-                counts[die - 1]++;
-            for (int i = 0; i != 6; i++)
-                if (counts[i] == 5)
-                    return 50;
-            return 0;
-        }
-
         public static int Nubers(int Row, params int[] dice)
         {
             int sum = 0;
@@ -59,7 +47,14 @@ namespace Yahtzee
             for (int i = 0; i < 6; i++)
             {
                 if (counts[i] >= Row)
+                {
+                    if (Row==5)
+                    {
+                        return 50;
+                    }
                     return Chance(dice);
+                }
+                   
             } 
             return 0;
         }
