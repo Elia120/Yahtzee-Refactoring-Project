@@ -1,18 +1,33 @@
-﻿namespace Yahtzee
+﻿using System;
+
+namespace Yahtzee
 {
     public class Yahtzee
     {
-        public static int Chance(int d1, int d2, int d3, int d4, int d5)
+        protected int[] dice;
+        public Yahtzee(int d1, int d2, int d3, int d4, int d5)
+        {
+            dice = new int[5];
+            dice[0] = d1;
+            dice[1] = d2;
+            dice[2] = d3;
+            dice[3] = d4;
+            dice[4] = d5;
+        }
+
+
+        //Chance basicly just means, to add all the nubers
+        public static int Chance(params int[] dice)
         {
             int total = 0;
-            total += d1;
-            total += d2;
-            total += d3;
-            total += d4;
-            total += d5;
+            foreach (int die in dice)
+            {
+                total += die;
+            }
             return total;
         }
 
+        //yahtzee is 5 of a kind
         public static int yahtzee(params int[] dice)
         {
             int[] counts = new int[6];
@@ -24,226 +39,84 @@
             return 0;
         }
 
-        public static int Ones(int d1, int d2, int d3, int d4, int d5)
+        public static int Nubers(int Row, params int[] dice)
         {
             int sum = 0;
-            if (d1 == 1) sum++;
-            if (d2 == 1) sum++;
-            if (d3 == 1) sum++;
-            if (d4 == 1) sum++;
-            if (d5 == 1)
-                sum++;
-
-            return sum;
-        }
-
-        public static int Twos(int d1, int d2, int d3, int d4, int d5)
-        {
-            int sum = 0;
-            if (d1 == 2) sum += 2;
-            if (d2 == 2) sum += 2;
-            if (d3 == 2) sum += 2;
-            if (d4 == 2) sum += 2;
-            if (d5 == 2) sum += 2;
-            return sum;
-        }
-
-        public static int Threes(int d1, int d2, int d3, int d4, int d5)
-        {
-            int s;
-            s = 0;
-            if (d1 == 3) s += 3;
-            if (d2 == 3) s += 3;
-            if (d3 == 3) s += 3;
-            if (d4 == 3) s += 3;
-            if (d5 == 3) s += 3;
-            return s;
-        }
-
-        protected int[] dice;
-        public Yahtzee(int d1, int d2, int d3, int d4, int _5)
-        {
-            dice = new int[5];
-            dice[0] = d1;
-            dice[1] = d2;
-            dice[2] = d3;
-            dice[3] = d4;
-            dice[4] = _5;
-        }
-
-        public int Fours()
-        {
-            int sum;
-            sum = 0;
-            for (int at = 0; at != 5; at++)
+            foreach (int die in dice)
             {
-                if (dice[at] == 4)
+                if (Row==die)
                 {
-                    sum += 4;
+                    sum += die;
                 }
             }
             return sum;
         }
-
-        public int Fives()
-        {
-            int s = 0;
-            int i;
-            for (i = 0; i < dice.Length; i++)
-                if (dice[i] == 5)
-                    s = s + 5;
-            return s;
-        }
-
-        public int sixes()
-        {
-            int sum = 0;
-            for (int at = 0; at < dice.Length; at++)
-                if (dice[at] == 6)
-                    sum = sum + 6;
-            return sum;
-        }
-
-        public static int ScorePair(int d1, int d2, int d3, int d4, int d5)
+        public static int Multiples(int Row, params int[] dice)
         {
             int[] counts = new int[6];
-            counts[d1 - 1]++;
-            counts[d2 - 1]++;
-            counts[d3 - 1]++;
-            counts[d4 - 1]++;
-            counts[d5 - 1]++;
-            int at;
-            for (at = 0; at != 6; at++)
-                if (counts[6 - at - 1] == 2)
-                    return (6 - at) * 2;
+            foreach (int die in dice)
+                counts[die - 1]++;
+            for (int i = 0; i < 6; i++)
+            {
+                if (counts[i] >= Row)
+                    return Chance(dice);
+            } 
             return 0;
         }
 
-        public static int TwoPair(int d1, int d2, int d3, int d4, int d5)
+        public static int Straights(int Row, params int[] dice)
+        {
+            Array.Sort(dice);
+            int temp = 0;
+            int amount = 0;
+            foreach (int die in dice)
+            {
+                if (die==temp+1)
+                {
+                    amount++;
+                    temp = die;
+                }
+                else if (die>temp)
+                {
+                    if (amount<3)
+                    {
+                        amount = 1;
+                        temp = die;
+                    }
+                    else
+                    {
+                        break;
+                    }  
+                }
+            }
+            if (amount>=Row)
+            {
+                return (Row-1) * 10;
+            }
+            return 0;
+        }
+
+        public static int FullHouse(params int[] dice)
         {
             int[] counts = new int[6];
-            counts[d1 - 1]++;
-            counts[d2 - 1]++;
-            counts[d3 - 1]++;
-            counts[d4 - 1]++;
-            counts[d5 - 1]++;
-            int n = 0;
-            int score = 0;
-            for (int i = 0; i < 6; i += 1)
-                if (counts[6 - i - 1] == 2)
-                {
-                    n++;
-                    score += (6 - i);
-                }
-            if (n == 2)
-                return score * 2;
-            else
-                return 0;
-        }
-
-        public static int FourOfAKind(int _1, int _2, int d3, int d4, int d5)
-        {
-            int[] tallies;
-            tallies = new int[6];
-            tallies[_1 - 1]++;
-            tallies[_2 - 1]++;
-            tallies[d3 - 1]++;
-            tallies[d4 - 1]++;
-            tallies[d5 - 1]++;
+            foreach (int die in dice)
+                counts[die - 1]++;
             for (int i = 0; i < 6; i++)
-                if (tallies[i] == 4)
-                    return (i + 1) * 4;
-            return 0;
-        }
-
-        public static int ThreeOfAKind(int d1, int d2, int d3, int d4, int d5)
-        {
-            int[] t;
-            t = new int[6];
-            t[d1 - 1]++;
-            t[d2 - 1]++;
-            t[d3 - 1]++;
-            t[d4 - 1]++;
-            t[d5 - 1]++;
-            for (int i = 0; i < 6; i++)
-                if (t[i] == 3)
-                    return (i + 1) * 3;
-            return 0;
-        }
-
-        public static int SmallStraight(int d1, int d2, int d3, int d4, int d5)
-        {
-            int[] tallies;
-            tallies = new int[6];
-            tallies[d1 - 1] += 1;
-            tallies[d2 - 1] += 1;
-            tallies[d3 - 1] += 1;
-            tallies[d4 - 1] += 1;
-            tallies[d5 - 1] += 1;
-            if (tallies[0] == 1 &&
-                tallies[1] == 1 &&
-                tallies[2] == 1 &&
-                tallies[3] == 1 &&
-                tallies[4] == 1)
-                return 15;
-            return 0;
-        }
-
-        public static int LargeStraight(int d1, int d2, int d3, int d4, int d5)
-        {
-            int[] tallies;
-            tallies = new int[6];
-            tallies[d1 - 1] += 1;
-            tallies[d2 - 1] += 1;
-            tallies[d3 - 1] += 1;
-            tallies[d4 - 1] += 1;
-            tallies[d5 - 1] += 1;
-            if (tallies[1] == 1 &&
-                tallies[2] == 1 &&
-                tallies[3] == 1 &&
-                tallies[4] == 1
-                && tallies[5] == 1)
-                return 20;
-            return 0;
-        }
-
-        public static int FullHouse(int d1, int d2, int d3, int d4, int d5)
-        {
-            int[] tallies;
-            bool _2 = false;
-            int i;
-            int _2_at = 0;
-            bool _3 = false;
-            int _3_at = 0;
-
-
-
-
-            tallies = new int[6];
-            tallies[d1 - 1] += 1;
-            tallies[d2 - 1] += 1;
-            tallies[d3 - 1] += 1;
-            tallies[d4 - 1] += 1;
-            tallies[d5 - 1] += 1;
-
-            for (i = 0; i != 6; i += 1)
-                if (tallies[i] == 2)
+            {
+                if (counts[i] >= 3)
                 {
-                    _2 = true;
-                    _2_at = i + 1;
+                    for (int j = 0; j < 6; j++)
+                    {
+                        if (j == i) continue;
+                        if (counts[i] >= 2)
+                        {
+                            return 25;
+                        }
+                    }
                 }
-
-            for (i = 0; i != 6; i += 1)
-                if (tallies[i] == 3)
-                {
-                    _3 = true;
-                    _3_at = i + 1;
-                }
-
-            if (_2 && _3)
-                return _2_at * 2 + _3_at * 3;
-            else
-                return 0;
+                    
+            }
+            return 0;
         }
     }
 }
